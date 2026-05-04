@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0a0a0f;
+    color: #e8e8f0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .scanline {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,180,0.015) 2px, rgba(0,255,180,0.015) 4px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    border-bottom: 1px solid rgba(0,255,140,0.15);
+    background: rgba(10,10,20,0.9);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #00ffaa;
+    letter-spacing: 0.1em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(232,232,240,0.6);
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: #00ffaa; }
+
+  .hero {
+    padding: 6rem 3rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-tag {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #00ffaa;
+    border: 1px solid rgba(0,255,170,0.3);
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Orbitron', monospace;
+  }
+
+  h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  h1 span { color: #00ffaa; }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: rgba(232,232,240,0.55);
+    max-width: 540px;
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 2rem;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: #00ffaa;
+    color: #0a0a0f;
+    border: none;
+    padding: 0.75rem 1.8rem;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 24px rgba(0,255,170,0.4);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: #00ffaa;
+    border: 1px solid rgba(0,255,170,0.4);
+    padding: 0.75rem 1.8rem;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-outline:hover {
+    border-color: #00ffaa;
+    background: rgba(0,255,170,0.05);
+  }
+
+  .stats-strip {
+    display: flex;
+    gap: 0;
+    border-top: 1px solid rgba(0,255,140,0.1);
+    border-bottom: 1px solid rgba(0,255,140,0.1);
+    margin: 0 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stat {
+    flex: 1;
+    padding: 1.5rem;
+    border-right: 1px solid rgba(0,255,140,0.1);
+    text-align: center;
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #00ffaa;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(232,232,240,0.4);
+    margin-top: 0.2rem;
+  }
+
+  .section {
+    padding: 4rem 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .section-header h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #ffffff;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(0,255,140,0.15);
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .game-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,255,140,0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+  }
+
+  .game-card:hover {
+    border-color: rgba(0,255,170,0.4);
+    transform: translateY(-4px);
+  }
+
+  .game-thumb {
+    height: 160px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .game-thumb-bg {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+  }
+
+  .thumb-1 { background: linear-gradient(135deg, #0d1a2d, #1a3a5c); }
+  .thumb-2 { background: linear-gradient(135deg, #1a0d0d, #3d1a1a); }
+  .thumb-3 { background: linear-gradient(135deg, #0d1a0d, #1a3d1a); }
+
+  .game-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+
+  .game-card:hover .game-overlay {
+    background: rgba(0,0,0,0.5);
+  }
+
+  .play-btn {
+    opacity: 0;
+    background: #00ffaa;
+    color: #0a0a0f;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .game-card:hover .play-btn { opacity: 1; }
+
+  .game-info {
+    padding: 1rem 1.2rem;
+  }
+
+  .game-genre {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #00ffaa;
+    margin-bottom: 0.4rem;
+    font-family: 'Orbitron', monospace;
+  }
+
+  .game-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+  }
+
+  .game-desc {
+    font-size: 0.8rem;
+    color: rgba(232,232,240,0.5);
+    line-height: 1.6;
+    margin-bottom: 0.8rem;
+  }
+
+  .game-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid rgba(0,255,140,0.2);
+    color: rgba(0,255,170,0.7);
+    font-family: 'Orbitron', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .skill-item {
+    padding: 1rem 1.2rem;
+    border: 1px solid rgba(0,255,140,0.1);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .skill-name {
+    font-size: 0.78rem;
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+    color: rgba(232,232,240,0.85);
+  }
+
+  .skill-bar {
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-fill {
+    height: 100%;
+    background: #00ffaa;
+    transition: width 1s ease;
+  }
+
+  .skill-pct {
+    font-size: 0.65rem;
+    color: #00ffaa;
+    text-align: right;
+    margin-top: 0.3rem;
+    font-family: 'Orbitron', monospace;
+  }
+
+  .contact-strip {
+    background: rgba(0,255,170,0.04);
+    border: 1px solid rgba(0,255,170,0.15);
+    padding: 2.5rem 3rem;
+    margin: 0 3rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .contact-text h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.3rem;
+  }
+
+  .contact-text p {
+    font-size: 0.82rem;
+    color: rgba(232,232,240,0.5);
+  }
+
+  .social-links {
+    display: flex;
+    gap: 0.8rem;
+  }
+
+  .social-btn {
+    padding: 0.55rem 1rem;
+    border: 1px solid rgba(0,255,140,0.3);
+    background: transparent;
+    color: rgba(232,232,240,0.7);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .social-btn:hover {
+    border-color: #00ffaa;
+    color: #00ffaa;
+  }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    border-top: 1px solid rgba(0,255,140,0.08);
+    font-size: 0.72rem;
+    color: rgba(232,232,240,0.25);
+    letter-spacing: 0.08em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .corner-accent {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: rgba(0,255,170,0.4);
+    border-style: solid;
+  }
+
+  .tl { top: 0; left: 0; border-width: 1px 0 0 1px; }
+  .tr { top: 0; right: 0; border-width: 1px 1px 0 0; }
+  .bl { bottom: 0; left: 0; border-width: 0 0 1px 1px; }
+  .br { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
+</style>
+</head>
+<body>
+
+<div class="scanline"></div>
+
+<nav>
+  <div class="logo">YourName.dev</div>
+  <ul class="nav-links">
+    <li><a href="#">Games</a></li>
+    <li><a href="#">Skills</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-tag">Unity Game Developer</div>
+  <h1>Crafting <span>Worlds</span><br>One Game at a Time</h1>
+  <p class="hero-sub">Indie game developer specializing in Unity. Building immersive gameplay experiences with C#, real-time physics, and polished mechanics.</p>
+  <div class="hero-btns">
+    <button class="btn-primary">View My Games</button>
+    <button class="btn-outline">Download CV</button>
+  </div>
+</section>
+
+<div class="stats-strip">
+  <div class="stat">
+    <div class="stat-num">6+</div>
+    <div class="stat-label">Games Built</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">3yr</div>
+    <div class="stat-label">Experience</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">C#</div>
+    <div class="stat-label">Primary Language</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">2D/3D</div>
+    <div class="stat-label">Unity Expertise</div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-header">
+    <h2>Featured Games</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="games-grid">
+
+    <div class="game-card">
+      <div class="game-thumb thumb-1">
+        <div class="game-thumb-bg">🚀</div>
+        <div class="game-overlay">
+          <button class="play-btn">▶ Play on Itch.io</button>
+        </div>
+      </div>
+      <div class="game-info">
+        <div class="game-genre">Shooter / Sci-Fi</div>
+        <div class="game-title">Stellar Vanguard</div>
+        <p class="game-desc">Top-down space shooter with procedural enemy waves and power-up system. Built in 72 hours for a game jam.</p>
+        <div class="game-tags">
+          <span class="tag">Unity 2D</span>
+          <span class="tag">Procedural</span>
+          <span class="tag">WebGL</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card">
+      <div class="game-thumb thumb-2">
+        <div class="game-thumb-bg">⚔️</div>
+        <div class="game-overlay">
+          <button class="play-btn">▶ Play on Itch.io</button>
+        </div>
+      </div>
+      <div class="game-info">
+        <div class="game-genre">RPG / Dungeon Crawler</div>
+        <div class="game-title">Dungeon Protocol</div>
+        <p class="game-desc">Roguelike dungeon crawler with procedurally generated maps, turn-based combat, and item crafting.</p>
+        <div class="game-tags">
+          <span class="tag">Unity 3D</span>
+          <span class="tag">Roguelike</span>
+          <span class="tag">PC</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card">
+      <div class="game-thumb thumb-3">
+        <div class="game-thumb-bg">🌿</div>
+        <div class="game-overlay">
+          <button class="play-btn">▶ Play on Itch.io</button>
+        </div>
+      </div>
+      <div class="game-info">
+        <div class="game-genre">Puzzle / Platformer</div>
+        <div class="game-title">Echo Gardens</div>
+        <p class="game-desc">Atmospheric puzzle platformer using light and shadow mechanics. Features hand-drawn-style shaders.</p>
+        <div class="game-tags">
+          <span class="tag">Unity 2D</span>
+          <span class="tag">Shaders</span>
+          <span class="tag">Mobile</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+  <div class="section-header">
+    <h2>Technical Skills</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid" id="skills-grid">
+    <div class="skill-item">
+      <div class="skill-name">Unity Engine</div>
+      <div class="skill-bar"><div class="skill-fill" data-pct="92" style="width:0%"></div></div>
+      <div class="skill-pct">92%</div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-name">C# Programming</div>
+      <div class="skill-bar"><div class="skill-fill" data-pct="88" style="width:0%"></div></div>
+      <div class="skill-pct">88%</div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-name">Shader Graph / HLSL</div>
+      <div class="skill-bar"><div class="skill-fill" data-pct="70" style="width:0%"></div></div>
+      <div class="skill-pct">70%</div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-name">Physics & Animation</div>
+      <div class="skill-bar"><div class="skill-fill" data-pct="85" style="width:0%"></div></div>
+      <div class="skill-pct">85%</div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-name">UI/UX Design</div>
+      <div class="skill-bar"><div class="skill-fill" data-pct="75" style="width:0%"></div></div>
+      <div class="skill-pct">75%</div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-name">Git & Version Control</div>
+      <div class="skill-bar"><div class="skill-fill" data-pct="80" style="width:0%"></div></div>
+      <div class="skill-pct">80%</div>
+    </div>
+  </div>
+</section>
+
+<div class="contact-strip" style="position: relative;">
+  <div class="corner-accent tl"></div>
+  <div class="corner-accent tr"></div>
+  <div class="corner-accent bl"></div>
+  <div class="corner-accent br"></div>
+  <div class="contact-text">
+    <h3>Available for freelance & collaboration</h3>
+    <p>Open to game jams, indie projects, and full-time opportunities</p>
+  </div>
+  <div class="social-links">
+    <a class="social-btn" href="#">GitHub</a>
+    <a class="social-btn" href="#">Itch.io</a>
+    <a class="social-btn" href="#">LinkedIn</a>
+    <a class="social-btn" href="#">Email</a>
+  </div>
+</div>
+
+<footer>© 2026 YourName — Unity Game Developer — Built with HTML & hosted on GitHub Pages</footer>
+
+<script>
+  setTimeout(() => {
+    document.querySelectorAll('.skill-fill').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 400);
+</script>
+
+</body>
+</html>
