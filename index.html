@@ -121,12 +121,7 @@
       display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.6rem;
       transition:opacity .5s ease;
     }
-    #loader::after {
-      content:'INITIALIZING SYSTEM';
-      font-family:'Share Tech Mono',monospace; font-size:.6rem; letter-spacing:.4em;
-      text-transform:uppercase; color:rgba(0,245,255,.5);
-      animation:blink 1.4s step-end infinite;
-    }
+    #loader::after { display:none; }
     #loader.hidden { opacity:0; pointer-events:none; }
     .three-body {
       --uib-size:35px; --uib-speed:.8s; --uib-color:#00f5ff;
@@ -1572,6 +1567,14 @@
     <div class="three-body__dot"></div>
     <div class="three-body__dot"></div>
   </div>
+  <p id="loader-msg" style="
+    font-family:'Share Tech Mono',monospace;
+    font-size:.62rem; letter-spacing:.12em; text-transform:uppercase;
+    color:rgba(0,245,255,.6); text-align:center;
+    max-width:280px; line-height:1.7;
+    opacity:0; transition:opacity .4s ease;
+    margin-top:.5rem;
+  "></p>
 </div>
 
 <div id="cursor"></div>
@@ -3048,11 +3051,43 @@
 /* ═══════════════════════════════════════════════
    LOADER
 ═══════════════════════════════════════════════ */
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.getElementById('loader').classList.add('hidden');
-  }, 600);
-});
+(function () {
+  const msgs = [
+    "// Initializing system...",
+    "// Don't be impatient, page is loading.",
+    "// Hold on, good things take time.",
+    "// Still here? Respect. Most quit by now.",
+    "// Yeah I know, it's taking a moment. Blame the 50+ games.",
+    "// Loading immersive worlds... please stand by.",
+    "// Almost there. Probably.",
+    "// Your patience is being tracked and appreciated.",
+    "// Compiling 4 years of grind into one page...",
+    "// OK fine, it's almost done. For real this time.",
+  ];
+
+  const el = document.getElementById('loader-msg');
+  let i = 0;
+
+  function showMsg() {
+    el.style.opacity = '0';
+    setTimeout(() => {
+      el.textContent = msgs[i % msgs.length];
+      el.style.opacity = '1';
+      i++;
+    }, 400);
+  }
+
+  // Show first message quickly, then rotate every 2.2s
+  setTimeout(showMsg, 300);
+  const interval = setInterval(showMsg, 2200);
+
+  window.addEventListener('load', () => {
+    clearInterval(interval);
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+    }, 600);
+  });
+})();
 
 /* ═══════════════════════════════════════════════
    AUDIO TOGGLE (Nova indicator)
