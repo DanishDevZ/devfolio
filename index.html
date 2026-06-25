@@ -1205,64 +1205,89 @@
        RESPONSIVE — TABLET & MOBILE
     ════════════════════════════ */
     @media (max-width:768px) {
-      /* Nav: wrap links to a second row instead of overlapping the logo */
-      nav { flex-wrap:wrap; padding:.7rem 1rem; }
+      /* ── Nav: logo row + CTA, links below ── */
+      nav { flex-wrap:wrap; padding:.6rem 1rem; gap:.4rem; }
+      .nav-logo { font-size:.85rem; letter-spacing:.12em; }
       .nav-center {
         position:static; transform:none; left:auto; order:3;
-        width:100%; margin-top:.65rem; gap:1rem;
-        justify-content:flex-start; overflow-x:auto;
+        width:100%; margin-top:.5rem; gap:.8rem;
+        justify-content:center; overflow-x:auto;
         padding-bottom:.15rem; -webkit-overflow-scrolling:touch;
+        display:flex;
       }
       .nav-center::-webkit-scrollbar { height:0; }
-      .nav-center a { font-size:.62rem; letter-spacing:.12em; white-space:nowrap; }
-      .nav-logo { font-size:.85rem; letter-spacing:.12em; }
-      .nav-cta { padding:.45rem 1rem; font-size:.6rem; }
+      .nav-center a { font-size:.62rem; letter-spacing:.1em; white-space:nowrap; }
+      .nav-cta { padding:.45rem 1rem; font-size:.62rem; white-space:nowrap; }
 
-      /* Hero: full-width stacked content */
+      /* ── Hero: proper full screen ── */
+      #hero { height:100svh; min-height:600px; }
       .hero-content {
-        width:100%; left:42px; right:0;
-        bottom:auto; top:96px;
-        padding:1rem 1.25rem 1rem 1.25rem;
+        position:absolute;
+        left:0; right:0; bottom:auto;
+        top:120px;
+        padding:1.2rem 1.5rem 1.2rem 1.5rem;
+        width:100%;
         justify-content:flex-start;
       }
-      .hero-badges { margin-bottom:1.1rem; flex-wrap:wrap; gap:.4rem; }
-      .hero-badge, .hero-badge-loc { font-size:.62rem; padding:.4rem .8rem; }
-      .hero-main-name { margin-bottom:1rem; }
-      .hero-tagline { font-size:.8rem; }
-      .hero-tagline-sub { font-size:1.05rem; max-width:100%; margin-bottom:1.4rem; }
-      .hero-tagline-sub br { display:none; }
-      .hero-cta-primary, .hero-cta-secondary { padding:.8rem 1.5rem; font-size:.72rem; }
+      .hero-badges { margin-bottom:.9rem; flex-wrap:wrap; gap:.4rem; }
+      .hero-badge, .hero-badge-loc { font-size:.6rem; padding:.35rem .7rem; }
 
-      /* Hide precise-pointer-only flourishes on small screens */
+      /* Name size */
+      .hero-main-name { margin-bottom:.8rem; line-height:1; }
+      .animated-title { font-size:clamp(3.5rem,18vw,6rem) !important; }
+
+      /* Tagline */
+      .hero-tagline { font-size:.75rem; letter-spacing:.15em; margin-bottom:.5rem; }
+      .hero-tagline-sub { font-size:1rem; max-width:100%; margin-bottom:1.4rem; line-height:1.5; }
+      .hero-tagline-sub br { display:none; }
+
+      /* CTA buttons */
+      .hero-ctas { display:flex; flex-wrap:wrap; gap:.7rem; }
+      .hero-cta-primary, .hero-cta-secondary { padding:.75rem 1.4rem; font-size:.68rem; }
+
+      /* Left bar — hide on mobile */
+      .hero-left-edge { display:none; }
+
+      /* Hide precise-pointer-only flourishes */
       #mini-preview, .hero-right-edge, .click-hint, .video-nav { display:none; }
 
-      /* Stats bar: let it grow and wrap into a 2x2 grid */
-      .hero-stats-bar-wrap { padding:0 12px; }
-      .hero-stats-bar { height:auto; flex-wrap:wrap; }
-      .hero-stat { flex:1 1 50%; padding:.7rem 1rem; min-height:62px; border-bottom:1px solid rgba(0,245,255,.07); }
+      /* Stats bar: 2×2 grid */
+      .hero-stats-bar-wrap { padding:0; }
+      .hero-stats-bar {
+        height:auto; flex-wrap:wrap;
+        display:grid; grid-template-columns:1fr 1fr;
+      }
+      .hero-stat {
+        flex:none; padding:.75rem 1rem; min-height:64px;
+        border-bottom:1px solid rgba(0,245,255,.07);
+        border-right:none;
+      }
       .hero-stat:nth-child(odd) { border-right:1px solid rgba(0,245,255,.07); }
-      .hero-stat-icon svg { width:22px; height:22px; }
-      .hero-stat-value { font-size:1.25rem; }
-      .hero-stat-value.small-val { font-size:1rem; }
+      .hero-stat-icon svg { width:20px; height:20px; }
+      .hero-stat-value { font-size:1.2rem; }
+      .hero-stat-value.small-val { font-size:.95rem; }
       .hero-stat-inner::before, .hero-stat-inner::after { display:none; }
 
-      /* Experience: stack content over the image instead of side-by-side */
+      /* Experience section */
       #story { display:block; }
       .story-img-panel { width:100%; }
       .story-img-panel::before {
-        background:
-          linear-gradient(to bottom, rgba(2,4,8,.82) 0%, rgba(2,4,8,.7) 40%, rgba(2,4,8,.92) 100%);
+        background:linear-gradient(to bottom, rgba(2,4,8,.82) 0%, rgba(2,4,8,.7) 40%, rgba(2,4,8,.92) 100%);
       }
       .story-img-panel::after { display:none; }
-      .story-overlay { width:100%; min-height:auto; padding:6rem 1.25rem 4rem; }
+      .story-overlay { width:100%; min-height:auto; padding:5rem 1.25rem 4rem; }
+
+      /* Contact cards */
+      .contact-cards-grid { grid-template-columns:1fr; }
+      .contact-cta-row { flex-direction:column; }
+      .contact-cta-primary, .contact-cta-secondary { width:100%; text-align:center; justify-content:center; }
+      .contact-response-badge { margin-left:0; justify-content:center; }
     }
 
-    @media (max-width:768px) {
-      /* Section padding trim for breathing room on phones */
-      #about { padding:5.5rem 1.1rem 4rem; }
-      #features { padding:4.5rem 1.1rem 6rem; }
-      #projects { padding:4.5rem 1.1rem; }
-      #contact { padding:4.5rem 1.1rem; }
+    @media (max-width:480px) {
+      .hero-content { top:110px; padding:1rem 1.2rem; }
+      .animated-title { font-size:clamp(3rem,16vw,5rem) !important; }
+      .hero-tagline-sub { font-size:.95rem; }
     }
     /* ════════════════════════════
        PROJECT CATEGORY TABS
@@ -1305,6 +1330,11 @@
     @media (max-width:768px) {
       .proj-tabs { gap:.55rem; margin-bottom:2rem; padding:0 .5rem; }
       .proj-tab { font-size:.65rem; padding:.65rem 1.2rem; letter-spacing:.04em; }
+      /* Section padding */
+      #about { padding:5.5rem 1.1rem 4rem; }
+      #features { padding:4.5rem 1.1rem 6rem; }
+      #projects { padding:4.5rem 1.1rem; }
+      #contact { padding:4.5rem 1.1rem; }
     }
 
 
