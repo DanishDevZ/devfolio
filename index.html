@@ -3071,18 +3071,21 @@
   function showMsg() {
     el.style.opacity = '0';
     setTimeout(() => {
-      el.textContent = msgs[i % msgs.length];
+      el.textContent = msgs[i];
       el.style.opacity = '1';
       i++;
-    }, 400);
+      // Schedule next only if more messages remain
+      if (i < msgs.length) {
+        setTimeout(showMsg, 4500);
+      }
+      // If last message reached, just stay on it forever until load
+    }, 500);
   }
 
-  // Show first message quickly, then rotate every 2.2s
-  setTimeout(showMsg, 300);
-  const interval = setInterval(showMsg, 2200);
+  // Show first message after a short delay
+  setTimeout(showMsg, 400);
 
   window.addEventListener('load', () => {
-    clearInterval(interval);
     setTimeout(() => {
       document.getElementById('loader').classList.add('hidden');
     }, 600);
