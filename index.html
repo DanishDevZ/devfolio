@@ -4,7 +4,14 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Danish Ali — Unity Game Developer</title>
+  <meta name="description" content="Danish Ali — Unity game developer with 4+ years of experience and 50+ published titles on Android &amp; iOS. Gameplay systems, AI, shaders, and scalable architecture."/>
+  <meta name="theme-color" content="#020408"/>
+  <meta property="og:title" content="Danish Ali — Unity Game Developer"/>
+  <meta property="og:description" content="4+ years · 50+ published titles · Gameplay systems, AI &amp; scalable architecture for modern mobile games."/>
+  <meta property="og:type" content="website"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="preconnect" href="https://res.cloudinary.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,6 +29,7 @@
       --glow-yellow: 0 0 8px #ffe600, 0 0 24px rgba(255,230,0,0.4);
     }
     html { scroll-behavior: smooth; }
+    section { scroll-margin-top: 64px; }
     body {
       background: var(--cp-black);
       font-family: 'Rajdhani', sans-serif;
@@ -57,7 +65,7 @@
     nav {
       display:flex; align-items:center; justify-content:space-between;
       background:rgba(2,4,8,0.96); padding:.85rem 2.5rem;
-      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
       border-bottom:1px solid rgba(0,245,255,0.12);
       position:relative;
     }
@@ -110,6 +118,81 @@
       50% { height:20px; transform:translateY(-4px); }
     }
 
+    /* ── Burger (mobile only) ── */
+    .nav-burger {
+      display:none; background:none; border:1px solid rgba(0,245,255,.25);
+      width:40px; height:36px; padding:0; cursor:none;
+      flex-direction:column; align-items:center; justify-content:center; gap:5px;
+      clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);
+      transition:border-color .2s, background .2s;
+    }
+    .nav-burger span {
+      display:block; width:16px; height:2px; background:var(--cp-cyan);
+      transition:transform .3s cubic-bezier(.22,1,.36,1), opacity .2s;
+    }
+    .nav-burger[aria-expanded="true"] { border-color:var(--cp-cyan); background:rgba(0,245,255,.08); }
+    .nav-burger[aria-expanded="true"] span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .nav-burger[aria-expanded="true"] span:nth-child(2) { opacity:0; }
+    .nav-burger[aria-expanded="true"] span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+    /* ── Mobile menu overlay ── */
+    #mobile-menu {
+      position:fixed; inset:0; z-index:4900;
+      background:
+        linear-gradient(rgba(0,245,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,.03) 1px, transparent 1px),
+        rgba(2,4,8,.97);
+      background-size:48px 48px, 48px 48px, auto;
+      display:flex; flex-direction:column; justify-content:center;
+      padding:5.5rem 2rem 3rem;
+      opacity:0; visibility:hidden; pointer-events:none;
+      transition:opacity .35s ease, visibility .35s;
+    }
+    #mobile-menu.open { opacity:1; visibility:visible; pointer-events:all; }
+    .mobile-menu-links { list-style:none; display:flex; flex-direction:column; gap:.4rem; }
+    .mobile-menu-links a {
+      display:flex; align-items:baseline; gap:.9rem;
+      font-family:'Orbitron',monospace; font-size:1.6rem; font-weight:900;
+      letter-spacing:.06em; text-transform:uppercase; text-decoration:none;
+      color:var(--cp-white); padding:.55rem 0;
+      border-bottom:1px solid rgba(0,245,255,.08);
+      opacity:0; transform:translateX(-18px);
+      transition:opacity .4s ease, transform .4s cubic-bezier(.22,1,.36,1), color .2s;
+    }
+    .mobile-menu-links a .mm-num {
+      font-family:'Share Tech Mono',monospace; font-size:.65rem; font-weight:400;
+      color:rgba(0,245,255,.45); letter-spacing:.15em;
+    }
+    .mobile-menu-links a.active, .mobile-menu-links a:active { color:var(--cp-cyan); }
+    #mobile-menu.open .mobile-menu-links a { opacity:1; transform:translateX(0); }
+    #mobile-menu.open .mobile-menu-links a:nth-child(1){transition-delay:.05s}
+    #mobile-menu.open .mobile-menu-links a:nth-child(2){transition-delay:.1s}
+    #mobile-menu.open .mobile-menu-links a:nth-child(3){transition-delay:.15s}
+    #mobile-menu.open .mobile-menu-links a:nth-child(4){transition-delay:.2s}
+    #mobile-menu.open .mobile-menu-links a:nth-child(5){transition-delay:.25s}
+    .mobile-menu-footer {
+      margin-top:2.2rem; display:flex; flex-direction:column; gap:1.4rem;
+      opacity:0; transform:translateY(12px);
+      transition:opacity .4s ease .3s, transform .4s cubic-bezier(.22,1,.36,1) .3s;
+    }
+    #mobile-menu.open .mobile-menu-footer { opacity:1; transform:translateY(0); }
+    .mobile-menu-cta {
+      display:inline-flex; align-items:center; justify-content:center; gap:.6rem;
+      background:var(--cp-cyan); color:var(--cp-black); border:none;
+      font-family:'Orbitron',monospace; font-weight:700; font-size:.72rem;
+      letter-spacing:.12em; text-transform:uppercase;
+      padding:1rem 2rem; width:100%; cursor:pointer;
+      clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+    }
+    .mobile-menu-socials { display:flex; gap:.8rem; justify-content:center; }
+    .mobile-menu-socials a {
+      width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+      border:1px solid rgba(0,245,255,.2); color:rgba(0,245,255,.6); text-decoration:none;
+      clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+    }
+    .mobile-menu-socials svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; }
+    body.menu-open { overflow:hidden; }
+
     /* ════════════════════════════
        LOADING SCREEN
     ════════════════════════════ */
@@ -144,7 +227,7 @@
     /* ════════════════════════════
        HERO — True split layout (reference image)
     ════════════════════════════ */
-    #hero { position:relative; height:100dvh; width:100vw; overflow:hidden; background:var(--cp-black); }
+    #hero { position:relative; height:100vh; height:100dvh; width:100%; overflow:hidden; background:var(--cp-black); }
 
     #video-frame {
       position:absolute; inset:0; z-index:2;
@@ -252,7 +335,7 @@
       display:inline-flex; align-items:center; gap:.6rem;
       font-family:'Share Tech Mono',monospace; font-size:.82rem; letter-spacing:.14em; text-transform:uppercase;
       color:var(--cp-cyan); border:1px solid rgba(0,245,255,.3);
-      padding:.5rem 1.2rem; background:rgba(0,0,0,.3); backdrop-filter:blur(8px);
+      padding:.5rem 1.2rem; background:rgba(0,0,0,.3); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
     }
     .hero-badge-dot { width:7px; height:7px; background:var(--cp-cyan); border-radius:50%; display:inline-block; box-shadow:var(--glow-cyan); animation:blink 1.5s step-end infinite; flex-shrink:0; }
     .hero-badge-sep { width:1px; height:28px; background:rgba(0,245,255,.25); margin:0 0; }
@@ -318,9 +401,10 @@
     .hero-cta-secondary:hover { border-color:var(--cp-cyan); box-shadow:var(--glow-cyan); background:rgba(0,245,255,.06); }
 
     /* Video nav dots */
-    .video-nav{position:absolute;bottom:calc(120px + 1.5rem);left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:.5rem;align-items:center}
-    .video-dot{width:8px;height:8px;border:1px solid rgba(0,245,255,.4);clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transition:background .3s,transform .3s;cursor:none}
-    .video-dot.active{background:var(--cp-cyan);transform:scale(1.4);box-shadow:var(--glow-cyan)}
+    .video-nav{position:absolute;bottom:calc(120px + .9rem);left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:.15rem;align-items:center}
+    .video-dot{width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:none;border:none;padding:0;cursor:none}
+    .video-dot::after{content:'';width:9px;height:9px;border:1px solid rgba(0,245,255,.4);clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transition:background .3s,transform .3s,box-shadow .3s}
+    .video-dot.active::after{background:var(--cp-cyan);transform:scale(1.4);box-shadow:var(--glow-cyan)}
 
     .click-hint{
       position:absolute;
@@ -356,7 +440,7 @@
       height: 100px;
       display: flex; align-items: stretch;
       background: linear-gradient(180deg, rgba(0,18,28,.97) 0%, rgba(2,8,14,.99) 100%);
-      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
       pointer-events: all;
       /* Angular clip: top-left diagonal cut + top-right diagonal cut */
       clip-path: polygon(
@@ -480,7 +564,7 @@
        ABOUT — Cyberpunk redesign
     ════════════════════════════ */
     #about {
-      min-height:100dvh;
+      min-height:100vh; min-height:100dvh;
       background: var(--cp-black);
       position:relative; overflow:hidden;
       padding: 7rem 2rem 6rem;
@@ -819,7 +903,7 @@
        STORY / EXPERIENCE (Nova)
     ════════════════════════════ */
     #story {
-      min-height:100dvh;
+      min-height:100vh; min-height:100dvh;
       background: var(--cp-black);
       position:relative; overflow:hidden; color:var(--cp-white);
       display: flex;
@@ -857,7 +941,7 @@
     .story-overlay {
       position: relative; z-index: 10;
       width: 55%;
-      min-height: 100dvh;
+      min-height: 100vh; min-height: 100dvh;
       display: flex; flex-direction: column; justify-content: center;
       padding: 5rem 3rem 5rem 5rem;
       background:
@@ -1008,6 +1092,7 @@
     .art-green{background:linear-gradient(135deg,#001008,#002010);border-top:1px solid rgba(0,255,136,.3)}
     .art-purple{background:linear-gradient(135deg,#080015,#100025);border-top:1px solid rgba(123,47,255,.3)}
     .art-orange{background:linear-gradient(135deg,#0d0500,#1a0a00);border-top:1px solid rgba(255,100,0,.3)}
+    .art-pink{background:linear-gradient(135deg,#10000a,#200014);border-top:1px solid rgba(255,80,180,.3)}
     .project-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(2,4,8,.95) 0%,rgba(2,4,8,.3) 60%,transparent 100%)}
 
     /* ── In-card video player ── */
@@ -1142,8 +1227,6 @@
     svg.hidden-svg { position:absolute; width:0; height:0; }
 
     @media(max-width:900px){
-      #nav-container{width:94%}
-      .nav-links{display:none}
       .bento-grid{grid-template-columns:1fr;grid-template-rows:auto}
       .bento-tilt.row-span-2{grid-row:span 1;min-height:280px}
       .projects-grid{grid-template-columns:1fr 1fr}
@@ -1180,6 +1263,10 @@
     @media (hover:none), (pointer:coarse) {
       * { cursor:auto !important; }
       #cursor, #cursor-dot { display:none !important; }
+      /* Hover-gated video controls are unreachable on touch — keep them visible */
+      .project-video-controls { opacity:1; transform:none; pointer-events:all; }
+      /* Fixed full-screen CRT grain forces costly repaints on mobile GPUs */
+      body::after { display:none; }
     }
 
     /* Respect reduced-motion preference */
@@ -1200,26 +1287,20 @@
        RESPONSIVE — TABLET & MOBILE
     ════════════════════════════ */
     @media (max-width:768px) {
-      /* ── Nav: logo row + CTA, links below ── */
-      nav { flex-wrap:wrap; padding:.6rem 1rem; gap:.4rem; }
+      /* ── Nav: single row — logo left, audio + burger right ── */
+      nav { padding:.6rem 1rem; }
       .nav-logo { font-size:.85rem; letter-spacing:.12em; }
-      .nav-center {
-        position:static; transform:none; left:auto; order:3;
-        width:100%; margin-top:.5rem; gap:.8rem;
-        justify-content:center; overflow-x:auto;
-        padding-bottom:.15rem; -webkit-overflow-scrolling:touch;
-        display:flex;
-      }
-      .nav-center::-webkit-scrollbar { height:0; }
-      .nav-center a { font-size:.62rem; letter-spacing:.1em; white-space:nowrap; }
-      .nav-cta { padding:.45rem 1rem; font-size:.62rem; white-space:nowrap; }
+      .nav-center { display:none; }
+      .nav-cta { display:none; }
+      .nav-burger { display:flex; }
+      section { scroll-margin-top: 54px; }
 
       /* ── Hero: proper full screen ── */
       #hero { height:100svh; min-height:600px; }
       .hero-content {
         position:absolute;
         left:0; right:0; bottom:auto;
-        top:120px;
+        top:78px;
         padding:1.2rem 1.5rem 1.2rem 1.5rem;
         width:100%;
         justify-content:flex-start;
@@ -1227,9 +1308,15 @@
       .hero-badges { margin-bottom:.9rem; flex-wrap:wrap; gap:.4rem; }
       .hero-badge, .hero-badge-loc { font-size:.6rem; padding:.35rem .7rem; }
 
-      /* Name size */
-      .hero-main-name { margin-bottom:.8rem; line-height:1; }
-      .animated-title { font-size:clamp(3.5rem,18vw,6rem) !important; }
+      /* Name size — hero name (the 18vw rule used to hit the About title by mistake) */
+      .hero-main-name { margin-bottom:.8rem; line-height:1; font-size:clamp(3rem,16vw,6rem); }
+
+      /* About title: cap so the longest word ("DEVELOPER") always fits the viewport */
+      .animated-title { font-size:clamp(1.7rem,8.5vw,3rem); padding:0 .5rem; }
+      .animated-title h3 { gap:.25rem .55rem; }
+
+      /* Experience title: "JOURNEY" overflowed on narrow phones at the desktop clamp */
+      .story-anim-word { font-size:clamp(2.4rem,11vw,4.5rem); }
 
       /* Tagline */
       .hero-tagline { font-size:.75rem; letter-spacing:.15em; margin-bottom:.5rem; }
@@ -1244,7 +1331,14 @@
       .hero-left-edge { display:none; }
 
       /* Hide precise-pointer-only flourishes */
-      #mini-preview, .hero-right-edge, .click-hint, .video-nav { display:none; }
+      #mini-preview, .hero-right-edge, .click-hint { display:none; }
+
+      /* HUD frame SVG is drawn for a 1200×100 bar — it distorts over the 2×2 grid */
+      .hud-frame, .hud-center-pip { display:none; }
+      .hero-stats-bar { clip-path:none; border-top:1px solid rgba(0,245,255,.25); }
+
+      /* Keep video switcher dots reachable on touch */
+      .video-nav { bottom:calc(152px + .6rem); }
 
       /* Stats bar: 2×2 grid */
       .hero-stats-bar-wrap { padding:0; }
@@ -1280,8 +1374,9 @@
     }
 
     @media (max-width:480px) {
-      .hero-content { top:110px; padding:1rem 1.2rem; }
-      .animated-title { font-size:clamp(3rem,16vw,5rem) !important; }
+      .hero-content { top:72px; padding:1rem 1.2rem; }
+      .hero-main-name { font-size:clamp(2.7rem,15vw,4.5rem); }
+      .animated-title { font-size:clamp(1.45rem,8vw,2.4rem); }
       .hero-tagline-sub { font-size:.95rem; }
     }
     /* ════════════════════════════
@@ -1452,7 +1547,7 @@
   #hire-modal {
     position:fixed; inset:0; z-index:9999;
     display:flex; align-items:center; justify-content:center;
-    background:rgba(2,4,8,.85); backdrop-filter:blur(10px);
+    background:rgba(2,4,8,.85); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
     opacity:0; pointer-events:none; transition:opacity .35s ease;
   }
   #hire-modal.open { opacity:1; pointer-events:all; cursor:auto; }
@@ -1556,6 +1651,12 @@
     animation:scanline 3s linear infinite; top:-2px;
   }
   @keyframes scanline { to { top:100%; } }
+
+  @media (max-width:480px) {
+    .hire-modal-box { padding:2.2rem 1.5rem 1.8rem; }
+    .hire-modal-title { font-size:1.25rem; }
+    .hire-contact-row { gap:.7rem; }
+  }
   </style>
 </head>
 <body>
@@ -1611,7 +1712,7 @@
 
     <!-- Right: audio + CTA -->
     <div class="nav-right">
-      <button class="audio-btn" id="audioBtn" title="Toggle ambient audio">
+      <button class="audio-btn" id="audioBtn" title="Toggle ambient audio" aria-pressed="false" aria-label="Toggle ambient audio">
         <audio id="audioEl" loop>
           <source src="https://res.cloudinary.com/dywyburrg/video/upload/v1782281459/GoodBad_heosz2.webm" type="audio/webm">
         </audio>
@@ -1621,8 +1722,36 @@
         <div class="indicator-line" style="--d:4"></div>
       </button>
       <button class="nav-cta hire-trigger" style="background:none;border:1px solid rgba(255,255,255,.3);font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;padding:.5rem 1.2rem;cursor:none;">Press Start ▶</button>
+      <button class="nav-burger" id="navBurger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
+</div>
+
+<!-- ══ MOBILE MENU ══ -->
+<div id="mobile-menu" aria-hidden="true">
+  <ul class="mobile-menu-links">
+    <li><a href="#about"><span class="mm-num">01</span> About</a></li>
+    <li><a href="#features"><span class="mm-num">02</span> Skills</a></li>
+    <li><a href="#story"><span class="mm-num">03</span> Experience</a></li>
+    <li><a href="#projects"><span class="mm-num">04</span> Projects</a></li>
+    <li><a href="#contact"><span class="mm-num">05</span> Contact</a></li>
+  </ul>
+  <div class="mobile-menu-footer">
+    <button class="mobile-menu-cta hire-trigger">Press Start ▶</button>
+    <div class="mobile-menu-socials">
+      <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/danish-ali-347186217" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+      <a href="mailto:danishgdev@gmail.com" aria-label="Email">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </a>
+    </div>
+  </div>
 </div>
 
 <!-- ══ HERO ══ -->
@@ -1664,7 +1793,7 @@
     <!-- Mini preview -->
     <div id="mini-preview">
       <div id="mini-preview-inner">
-        <video id="mini-video" muted loop playsinline preload="auto"></video>
+        <video id="mini-video" muted loop playsinline preload="none"></video>
       </div>
     </div>
 
@@ -1698,10 +1827,10 @@
       </div>
 
       <!-- Main name -->
-      <div class="hero-main-name">
+      <h1 class="hero-main-name">
         DANISH
         <span class="gy">ALI</span>
-      </div>
+      </h1>
 
       <!-- Tagline -->
       <div class="hero-tagline-row">
@@ -1897,7 +2026,7 @@
       <!-- Left: profile card -->
       <div class="about-profile-card">
         <div class="about-img-frame">
-          <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1778242861/Kewybaord_gxc2xg.png" alt="Danish Ali"/>
+          <img src="https://res.cloudinary.com/dywyburrg/image/upload/f_auto,q_auto/v1778242861/Kewybaord_gxc2xg.png" alt="Danish Ali" loading="lazy" decoding="async"/>
           <div class="about-img-hud"></div>
         </div>
         <div class="about-id-card">
@@ -2105,7 +2234,7 @@
 <section id="story">
   <!-- Right: background image panel -->
   <div class="story-img-panel">
-    <img id="storyImg" src="https://drive.google.com/thumbnail?id=1yhi_0VdLe71W2KnTiBLIOIRVOTjhw_zi&sz=w1200" alt="Experience background"/>
+    <img id="storyImg" src="https://drive.google.com/thumbnail?id=1yhi_0VdLe71W2KnTiBLIOIRVOTjhw_zi&sz=w1200" alt="Experience background" loading="lazy" decoding="async"/>
   </div>
 
   <!-- Left: content overlay -->
@@ -2178,16 +2307,16 @@
   <!-- Category tabs -->
   <div class="proj-tabs" role="tablist" aria-label="Project categories">
     <button class="proj-tab active" role="tab" aria-selected="true" data-cat="3d">3D Games <span class="proj-tab-count">13</span></button>
-    <button class="proj-tab" role="tab" aria-selected="false" data-cat="2d">2D Games <span class="proj-tab-count">13</span></button>
+    <button class="proj-tab" role="tab" aria-selected="false" data-cat="2d">2D Games <span class="proj-tab-count">14</span></button>
     <button class="proj-tab" role="tab" aria-selected="false" data-cat="mp">Multiplayer Games <span class="proj-tab-count">03</span></button>
-    <button class="proj-tab" role="tab" aria-selected="false" data-cat="web">Web Games <span class="proj-tab-count">29</span></button>
+    <button class="proj-tab" role="tab" aria-selected="false" data-cat="web">Web Games <span class="proj-tab-count">28</span></button>
   </div>
 
   <!-- ── 2D GAMES ── -->
-  <div class="proj-panel" data-cat="2d">
+  <div class="proj-panel" role="tabpanel" data-cat="2d">
     <div class="projects-grid">
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.kfs.wedding.cake.games" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383698/Wedding_Cake_Maker_My_Bakery_kl52vl.webp" alt="Wedding Cake Maker: My Bakery" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383698/Wedding_Cake_Maker_My_Bakery_kl52vl.webp" alt="Wedding Cake Maker: My Bakery" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge" style="color:var(--cp-magenta);border-color:var(--cp-magenta);">Casual</span>
@@ -2197,7 +2326,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.kfs.fashion.dress.tailor.shop" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383698/Fashion_Dress_Tailor_Shop_dgyfin.webp" alt="Fashion Dress Tailor Shop" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383698/Fashion_Dress_Tailor_Shop_dgyfin.webp" alt="Fashion Dress Tailor Shop" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge" style="color:var(--cp-purple);border-color:var(--cp-purple);">Fashion</span>
@@ -2207,7 +2336,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.tgs.bugs_smashing.insectgame" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383698/Bug_Smash_Whack_A_Mole_e77el3.webp" alt="Bug Smash: Whack A Mole" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383698/Bug_Smash_Whack_A_Mole_e77el3.webp" alt="Bug Smash: Whack A Mole" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge" style="color:var(--cp-green);border-color:var(--cp-green);">Hyper-Casual</span>
@@ -2217,7 +2346,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.eb.emoji.puzzle.match.puzzle.game" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Emoji_Puzzle_Match_Puzzle_Game_uk2yuh.webp" alt="Emoji Puzzle: Match Puzzle Game" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Emoji_Puzzle_Match_Puzzle_Game_uk2yuh.webp" alt="Emoji Puzzle: Match Puzzle Game" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge" style="color:var(--cp-yellow);border-color:var(--cp-yellow);">Puzzle</span>
@@ -2227,7 +2356,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.eb.tic.tac.toe.glow.xo.player" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Tic_Tac_Toe_-_Player_XOXO_GAME_aetr1e.webp" alt="Tic Tac Toe – Player XOXO" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Tic_Tac_Toe_-_Player_XOXO_GAME_aetr1e.webp" alt="Tic Tac Toe – Player XOXO" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge">2 Player</span>
@@ -2237,7 +2366,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.echobyte.animal.mix.ai.creature.lab" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/AI_Mix_Animal_Creature_Lab_fldyof.webp" alt="AI Mix Animal: Creature Lab" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/AI_Mix_Animal_Creature_Lab_fldyof.webp" alt="AI Mix Animal: Creature Lab" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge" style="color:var(--cp-yellow);border-color:var(--cp-yellow);">AI Hybrid</span>
@@ -2247,7 +2376,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.eb.fake.call.santa.prank.call" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Fake_Call_Santa_Prank_Call_iq1fsl.webp" alt="Fake Call: Santa Prank Call" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Fake_Call_Santa_Prank_Call_iq1fsl.webp" alt="Fake Call: Santa Prank Call" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge" style="color:var(--cp-magenta);border-color:var(--cp-magenta);">Prank / Fun</span>
@@ -2257,7 +2386,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.eb.triple.goods.sorting.match3D" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Triple_Goods_Sorting_Match_3D_z0kl2j.webp" alt="Triple Goods Sorting Match 3D" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Triple_Goods_Sorting_Match_3D_z0kl2j.webp" alt="Triple Goods Sorting Match 3D" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge">Match-3</span>
@@ -2267,7 +2396,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.eb.cat.doctor.asmr.makeover" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Cat_Doctor_ASMR_Makeover_Spa_hughfr.webp" alt="Cat Doctor ASMR Makeover Spa" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Cat_Doctor_ASMR_Makeover_Spa_hughfr.webp" alt="Cat Doctor ASMR Makeover Spa" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge" style="color:var(--cp-magenta);border-color:var(--cp-magenta);">ASMR / Casual</span>
@@ -2277,7 +2406,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.eb.find.it.mystery.hidden.objects" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Find_N_Seek_Hidden_Objects_adkcvi.webp" alt="Find N Seek Hidden Objects" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Find_N_Seek_Hidden_Objects_adkcvi.webp" alt="Find N Seek Hidden Objects" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge" style="color:var(--cp-purple);border-color:var(--cp-purple);">Hidden Object</span>
@@ -2287,7 +2416,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.eb.left.or.right.dressup.choices" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383696/Left_or_Right_Fashion_Dresses_sglofh.webp" alt="Left or Right: Fashion Dresses" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383696/Left_or_Right_Fashion_Dresses_sglofh.webp" alt="Left or Right: Fashion Dresses" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge" style="color:var(--cp-yellow);border-color:var(--cp-yellow);">Dress-Up</span>
@@ -2297,7 +2426,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.eb.parking.order.puzzle.car.jam" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Parking_order_Puzzle_Car_Jam_swwetv.webp" alt="Parking Order! Puzzle Car Jam" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Parking_order_Puzzle_Car_Jam_swwetv.webp" alt="Parking Order! Puzzle Car Jam" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge" style="color:var(--cp-green);border-color:var(--cp-green);">Puzzle</span>
@@ -2307,7 +2436,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.eb.bolts.and.nuts.screw.master" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Nut_Master_Nuts_and_Bolts_m9isfe.webp" alt="Nut Master: Nuts and Bolts" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383697/Nut_Master_Nuts_and_Bolts_m9isfe.webp" alt="Nut Master: Nuts and Bolts" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge">Brain Teaser</span>
@@ -2317,7 +2446,7 @@
         </div>
       </a>
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.tgs.zombie.makeover.asmr.makeup.fashiongames" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
-        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383696/Makeup_Salon_Zombie_ASMR_aktupg.webp" alt="Makeup Salon: Zombie ASMR" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="https://res.cloudinary.com/dywyburrg/image/upload/v1782383696/Makeup_Salon_Zombie_ASMR_aktupg.webp" alt="Makeup Salon: Zombie ASMR" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <div class="project-card-overlay"></div>
         <div class="project-info">
           <span class="project-badge" style="color:var(--cp-magenta);border-color:var(--cp-magenta);">ASMR / Makeover</span>
@@ -2330,7 +2459,7 @@
   </div>
 
   <!-- ── 3D GAMES ── -->
-  <div class="proj-panel active" data-cat="3d">
+  <div class="proj-panel active" role="tabpanel" data-cat="3d">
     <div class="projects-grid">
       <a class="project-card" href="https://play.google.com/store/apps/details?id=com.ironbyte.bad.cat.simulator.grandma.game" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
         <div class="project-video-wrap">
@@ -2609,7 +2738,7 @@
   </div>
 
   <!-- ── MULTIPLAYER GAMES ── -->
-  <div class="proj-panel" data-cat="mp">
+  <div class="proj-panel" role="tabpanel" data-cat="mp">
     <div class="projects-grid">
       <div class="project-card" style="display:flex;flex-direction:column;justify-content:flex-end;">
         <div class="project-video-wrap">
@@ -2678,7 +2807,7 @@
   </div>
 
   <!-- ── WEB GAMES ── -->
-  <div class="proj-panel" data-cat="web">
+  <div class="proj-panel" role="tabpanel" data-cat="web">
     <div class="projects-grid">
       <a class="project-card" href="https://danish-a.itch.io/camelrunner3d" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;">
         <div class="project-art art-yellow"><div class="project-art-icon">🐪</div></div>
@@ -3118,12 +3247,17 @@
   // Show first message after a short delay
   setTimeout(showMsg, 400);
 
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      document.getElementById('loader').classList.add('hidden');
-    }, 600);
-  });
+  function hideLoader() {
+    document.getElementById('loader').classList.add('hidden');
+  }
+  window.addEventListener('load', () => setTimeout(hideLoader, 600));
+  // Failsafe: never keep visitors waiting on a stalled asset
+  setTimeout(hideLoader, 7000);
 })();
+
+/* Shared capability flags */
+const FINE_POINTER = !!(window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches);
+const REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
 /* ═══════════════════════════════════════════════
    AUDIO TOGGLE (Nova indicator)
@@ -3136,7 +3270,17 @@ const indicators = audioBtn.querySelectorAll('.indicator-line');
 audioBtn.addEventListener('click', () => {
   audioPlaying = !audioPlaying;
   indicators.forEach(l => l.classList.toggle('active', audioPlaying));
-  // (audio would play here if a real track was linked)
+  audioBtn.setAttribute('aria-pressed', audioPlaying ? 'true' : 'false');
+  if (audioPlaying) {
+    audioEl.volume = 0.35;
+    audioEl.play().catch(() => {
+      audioPlaying = false;
+      indicators.forEach(l => l.classList.remove('active'));
+      audioBtn.setAttribute('aria-pressed', 'false');
+    });
+  } else {
+    audioEl.pause();
+  }
 });
 
 /* ═══════════════════════════════════════════════
@@ -3145,16 +3289,68 @@ audioBtn.addEventListener('click', () => {
 const navContainer = document.getElementById('nav-container');
 const nav = document.getElementById('nav');
 let lastScrollY = 0;
+let navTicking = false;
 
-window.addEventListener('scroll', () => {
+function onNavScroll() {
   const y = window.scrollY;
-  if (y === 0) {
-    nav.classList.remove('floating');
-  } else {
-    nav.classList.add('floating');
+  nav.classList.toggle('floating', y > 0);
+
+  // Hide when scrolling down past the hero, reveal on any scroll up
+  if (!document.body.classList.contains('menu-open')) {
+    if (y > 320 && y > lastScrollY + 4) {
+      navContainer.classList.add('hidden');
+    } else if (y < lastScrollY - 4 || y <= 320) {
+      navContainer.classList.remove('hidden');
+    }
   }
   lastScrollY = y;
+  navTicking = false;
+}
+
+window.addEventListener('scroll', () => {
+  if (!navTicking) { navTicking = true; requestAnimationFrame(onNavScroll); }
 }, { passive: true });
+
+/* ═══ MOBILE MENU ═══ */
+(function () {
+  const burger = document.getElementById('navBurger');
+  const menu = document.getElementById('mobile-menu');
+  if (!burger || !menu) return;
+
+  function setMenu(open) {
+    menu.classList.toggle('open', open);
+    document.body.classList.toggle('menu-open', open);
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if (open) navContainer.classList.remove('hidden');
+  }
+
+  burger.addEventListener('click', () => setMenu(!menu.classList.contains('open')));
+  menu.querySelectorAll('a, .mobile-menu-cta').forEach(el => {
+    el.addEventListener('click', () => setMenu(false));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && menu.classList.contains('open')) setMenu(false);
+  });
+})();
+
+/* ═══ SCROLL-SPY — highlight the section in view ═══ */
+(function () {
+  const links = document.querySelectorAll('.nav-center a, .mobile-menu-links a');
+  if (!links.length || !('IntersectionObserver' in window)) return;
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const id = '#' + entry.target.id;
+      links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === id));
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  ['about', 'features', 'story', 'projects', 'contact'].forEach(id => {
+    const s = document.getElementById(id);
+    if (s) spy.observe(s);
+  });
+})();
 
 /* ═══════════════════════════════════════════════
    HERO — Nova video switcher
@@ -3175,8 +3371,10 @@ function buildDots() {
   const nav = document.getElementById('videoNav');
   nav.innerHTML = '';
   HERO_URLS.forEach((_, i) => {
-    const d = document.createElement('div');
+    const d = document.createElement('button');
+    d.type = 'button';
     d.className = 'video-dot' + (i === currentIdx ? ' active' : '');
+    d.setAttribute('aria-label', 'Show gameplay video ' + (i + 1));
     d.addEventListener('click', () => switchTo(i));
     nav.appendChild(d);
   });
@@ -3207,13 +3405,15 @@ function switchTo(targetIdx) {
     });
     currentIdx = targetIdx;
 
-    // Update mini-preview
-    const nextIdx = (currentIdx + 1) % HERO_URLS.length;
-    const miniVid = document.getElementById('mini-video');
-    if (miniVid) {
-      miniVid.src = HERO_URLS[nextIdx];
-      miniVid.load();
-      miniVid.play().catch(() => {});
+    // Update mini-preview (skip on touch devices where it's hidden)
+    if (FINE_POINTER) {
+      const nextIdx = (currentIdx + 1) % HERO_URLS.length;
+      const miniVid = document.getElementById('mini-video');
+      if (miniVid) {
+        miniVid.src = HERO_URLS[nextIdx];
+        miniVid.load();
+        miniVid.play().catch(() => {});
+      }
     }
 
     buildDots();
@@ -3230,10 +3430,12 @@ function switchTo(targetIdx) {
   }, 500);
 }
 
-// Mini preview click → switch to next video
-document.getElementById('mini-preview').addEventListener('click', () => {
-  switchTo((currentIdx + 1) % HERO_URLS.length);
-});
+// Mini preview click → switch to next video (desktop only — hidden on touch)
+if (FINE_POINTER) {
+  document.getElementById('mini-preview').addEventListener('click', () => {
+    switchTo((currentIdx + 1) % HERO_URLS.length);
+  });
+}
 
 buildDots();
 
@@ -3244,8 +3446,9 @@ document.querySelectorAll('.hero-video-wrap video').forEach((vid, i) => {
   });
 });
 
-// Init mini-preview on page load — show next video (index 1) as preview of what's coming
+// Init mini-preview on page load — desktop only; on touch it's hidden, so don't download the video
 (function () {
+  if (!FINE_POINTER) return;
   const miniVid = document.getElementById('mini-video');
   if (miniVid) {
     miniVid.src = HERO_URLS[1];
@@ -3258,15 +3461,22 @@ document.querySelectorAll('.hero-video-wrap video').forEach((vid, i) => {
    SCROLL — Nova clip-path morph on video-frame
 ═══════════════════════════════════════════════ */
 const videoFrame = document.getElementById('video-frame');
+let frameTicking = false;
 window.addEventListener('scroll', () => {
-  const p = Math.min(window.scrollY / window.innerHeight, 1);
-  if (p > 0.05) {
-    videoFrame.style.clipPath = `polygon(${14 * p}% 0%, ${100 - 28 * p}% 0%, ${100 - 10 * p}% ${90 + 10 * p}%, 0% 100%)`;
-    videoFrame.style.borderRadius = `0 0 ${40 * p}% ${10 * p}%`;
-  } else {
-    videoFrame.style.clipPath = 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)';
-    videoFrame.style.borderRadius = '0';
-  }
+  if (frameTicking) return;
+  frameTicking = true;
+  requestAnimationFrame(() => {
+    frameTicking = false;
+    if (window.scrollY > window.innerHeight * 1.5) return; // hero is off-screen — skip the work
+    const p = Math.min(window.scrollY / window.innerHeight, 1);
+    if (p > 0.05) {
+      videoFrame.style.clipPath = `polygon(${14 * p}% 0%, ${100 - 28 * p}% 0%, ${100 - 10 * p}% ${90 + 10 * p}%, 0% 100%)`;
+      videoFrame.style.borderRadius = `0 0 ${40 * p}% ${10 * p}%`;
+    } else {
+      videoFrame.style.clipPath = 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)';
+      videoFrame.style.borderRadius = '0';
+    }
+  });
 }, { passive: true });
 
 /* ═══════════════════════════════════════════════
@@ -3277,7 +3487,8 @@ const aboutClip = document.getElementById('about-clip-section');
 const aboutImgWrapper = document.getElementById('aboutImg');
 
 window.addEventListener('scroll', () => {
-  if (!aboutClip || !aboutImgWrapper) return;
+  // Legacy section is display:none — don't measure layout for it on every scroll
+  if (!aboutClip || !aboutImgWrapper || aboutClip.offsetParent === null) return;
   const rect = aboutClip.getBoundingClientRect();
   const vh = window.innerHeight;
 
@@ -3374,7 +3585,9 @@ function addTilt(el) {
   });
   el.addEventListener('mouseleave', () => el.style.transform = '');
 }
-document.querySelectorAll('.bento-tilt, .bento-big, .project-card').forEach(addTilt);
+if (FINE_POINTER && !REDUCED_MOTION) {
+  document.querySelectorAll('.bento-tilt, .bento-big, .project-card').forEach(addTilt);
+}
 
 /* ═══════════════════════════════════════════════
    STORY IMAGE 3D TILT (Nova story.tsx)
@@ -3414,6 +3627,7 @@ document.querySelectorAll('a, button, .bento-tilt, .bento-big, .project-card, #m
    RANDOM GLITCH FLASH
 ═══════════════════════════════════════════════ */
 setInterval(() => {
+  if (REDUCED_MOTION) return;
   const h = document.querySelector('.hero-main-name');
   if (!h) return;
   h.style.clipPath = `polygon(0 ${Math.random() * 8}%, 100% ${Math.random() * 8}%, 100% ${82 + Math.random() * 12}%, 0 ${80 + Math.random() * 12}%)`;
