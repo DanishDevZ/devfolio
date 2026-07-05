@@ -3260,6 +3260,56 @@ const FINE_POINTER = !!(window.matchMedia && window.matchMedia('(hover:hover) an
 const REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
 /* ═══════════════════════════════════════════════
+   VIDEO FORMAT FALLBACK
+   iOS Safari can't decode WebM. Cloudinary transcodes
+   on the fly when the delivery extension changes, so on
+   WebM-less browsers we swap .webm → .mp4 (H.264).
+═══════════════════════════════════════════════ */
+const WEBM_OK = (function () {
+  const v = document.createElement('video');
+  return !!(v.canPlayType && (v.canPlayType('video/webm; codecs="vp9"') || v.canPlayType('video/webm')));
+})();
+
+function playableSrc(url) {
+  if (!WEBM_OK && url && url.indexOf('res.cloudinary.com') !== -1 && /\.webm(\?|$)/i.test(url)) {
+    return url
+      .replace('/video/upload/', '/video/upload/q_auto/')   // optimized bitrate
+      .replace(/\.webm(\?.*)?$/i, '.mp4$1');
+  }
+  return url;
+}
+
+/* Rewrite inline <source> tags (bento cards + ambient audio track) */
+if (!WEBM_OK) {
+  document.querySelectorAll('video source[src$=".webm"]').forEach(s => {
+    s.src = s.getAttribute('src')
+      .replace('/video/upload/', '/video/upload/q_auto/')
+      .replace(/\.webm$/i, '.mp4');
+    s.type = 'video/mp4';
+    s.closest('video').load();
+  });
+  document.querySelectorAll('audio source[src$=".webm"]').forEach(s => {
+    // Cloudinary extracts the audio track of a video when given an audio extension
+    s.src = s.getAttribute('src').replace(/\.webm$/i, '.mp3');
+    s.type = 'audio/mpeg';
+    s.closest('audio').load();
+  });
+}
+
+/* Safety net: if any video still errors on a .webm URL, retry once as .mp4 */
+document.addEventListener('error', e => {
+  const t = e.target;
+  if (t && t.tagName === 'VIDEO' && t.src && /\.webm(\?|$)/i.test(t.src) && !t.dataset.mp4Retry) {
+    t.dataset.mp4Retry = '1';
+    t.src = t.src
+      .replace('/video/upload/', '/video/upload/q_auto/')
+      .replace(/\.webm(\?|$)/i, '.mp4$1');
+    t.load();
+    t.play().catch(() => {});
+  }
+}, true);
+
+/* ═══════════════════════════════════════════════
    AUDIO TOGGLE (Nova indicator)
 ═══════════════════════════════════════════════ */
 let audioPlaying = false;
@@ -3360,12 +3410,16 @@ const HERO_URLS = [
   'https://res.cloudinary.com/dywyburrg/video/upload/v1782286133/Last_Sunset_af50zq.webm',
   'https://res.cloudinary.com/dywyburrg/video/upload/v1782290849/CatGame_ujrnyz.webm',
   'https://res.cloudinary.com/dywyburrg/video/upload/v1782298165/Blood_Moon_Bazaar_vloqgd.webm'
-];
+].map(playableSrc);
 
 let currentIdx = 0;
 let transitioning = false;
 
-document.querySelector('#hf0 video').play().catch(() => {});
+(function () {
+  const v0 = document.querySelector('#hf0 video');
+  if (v0.getAttribute('src') !== HERO_URLS[0]) { v0.src = HERO_URLS[0]; v0.load(); }
+  v0.play().catch(() => {});
+})();
 
 function buildDots() {
   const nav = document.getElementById('videoNav');
@@ -3394,7 +3448,7 @@ function switchTo(targetIdx) {
         el.classList.add('active');
         if (vid) {
           // Load from data-src if not yet loaded
-          if (!vid.src && vid.dataset.src) { vid.src = vid.dataset.src; }
+          if (!vid.src && vid.dataset.src) { vid.src = playableSrc(vid.dataset.src); }
           if (vid.src !== HERO_URLS[i]) { vid.src = HERO_URLS[i]; vid.load(); }
           vid.muted = true; vid.play().catch(() => {});
         }
@@ -3676,7 +3730,7 @@ setInterval(() => {
 
       // Lazy-load src from data-src on first sight
       if (entry.isIntersecting && !vid.src && vid.dataset.src) {
-        vid.src = vid.dataset.src;
+        vid.src = playableSrc(vid.dataset.src);
         vid.load();
       }
 
@@ -3787,7 +3841,7 @@ setInterval(() => {
       if (entry.isIntersecting) {
         const v = entry.target;
         if (!v.src && v.dataset.src) {
-          v.src = v.dataset.src;
+          v.src = playableSrc(v.dataset.src);
           v.load();
           v.play().catch(() => {});
         }
